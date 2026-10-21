@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="980" viewBox="0 0 700 980">
+  <defs>
+    <linearGradient id="night" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#541322"/>
+      <stop offset="1" stop-color="#21050c"/>
+    </linearGradient>
+  </defs>
+  <rect width="700" height="980" rx="20" fill="url(#night)"/>
+  <rect x="35" y="35" width="630" height="910" rx="12" fill="none" stroke="#f3dba7" stroke-width="3"/>
+  <rect x="52" y="52" width="596" height="876" rx="8" fill="none" stroke="#d7ad66" stroke-width="1.5"/>
+  <g fill="none" stroke="#f3dba7" stroke-width="2">
+    <path d="M350 140c-45-44-95-2-49 42 20 20 49 43 49 43s29-23 49-43c46-44-4-86-49-42Z"/>
+    <path d="M350 114v-38m-18 20 18 18 18-18"/>
+    <circle cx="350" cy="500" r="118" stroke-opacity=".35"/>
+    <circle cx="350" cy="500" r="98" stroke-opacity=".65"/>
+    <path d="M230 500h-75m390 0h-75M350 382v-60m0 356v-60"/>
+    <path d="M180 274c60 62 105 76 170 76s110-14 170-76M180 706c60-62 105-76 170-76s110 14 170 76"/>
+  </g>
+  <g fill="#f3dba7" text-anchor="middle">
+    <text x="350" y="290" font-family="Georgia,serif" font-size="22" letter-spacing="8">THE CELEBRATION OF</text>
+    <text x="350" y="438" font-family="Georgia,serif" font-size="53" font-style="italic">Love &amp; Joy</text>
+    <text x="350" y="495" font-family="Georgia,serif" font-size="22" letter-spacing="6">TWO WEDDINGS · ONE DAY</text>
+    <text x="350" y="570" font-family="Georgia,serif" font-size="25" letter-spacing="5">FRIDAY</text>
+    <text x="350" y="632" font-family="Georgia,serif" font-size="48">04 · 12 · 2026</text>
+    <text x="350" y="770" font-family="Georgia,serif" font-size="21" letter-spacing="5">YOUR PRESENCE WILL MAKE</text>
+    <text x="350" y="812" font-family="Georgia,serif" font-size="21" letter-spacing="5">OUR DAY COMPLETE</text>
+  </g>
+  <g fill="#d7ad66">
+    <path d="m350 350 9 19 21 3-15 15 4 21-19-10-19 10 4-21-15-15 21-3Z"/>
+    <circle cx="170" cy="500" r="5"/><circle cx="530" cy="500" r="5"/>
+    <circle cx="350" cy="714" r="5"/>
+  </g>
+</svg>

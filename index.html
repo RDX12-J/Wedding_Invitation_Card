@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#3b0712" />
+  <title>A Royal Celebration — Royal Wedding Invitation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Great+Vibes&family=Manrope:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Yatra+One&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <img class="ganesh-mark" src="images/ganeshji.jpg" alt="Ganesh ji" />
+  <div class="welcome-image-overlay" id="welcomeImageOverlay" role="button" tabindex="0"
+    aria-label="Close welcome image" hidden>
+    <img src="images/greatwelcom.jpg" alt="Welcome image" />
+  </div>
+  <canvas class="skyshot-canvas" id="skyshotCanvas" aria-hidden="true" hidden></canvas>
+
+  <div class="envelope-intro" id="envelopeIntro" role="dialog" aria-label="Open wedding invitation">
+    <div class="intro-glow"></div>
+    <div class="intro-card">
+      <h2><em>||ॐ श्री गणेशाय नमः ||</em></h2>
+      <div class="intro-ornament">✦ ❧ ✦</div>
+      <p class="eyebrow">A Royal CELEBRATION</p>
+      <h1>With joyful hearts, You &your family invited to <br><em>Wedding ceremony celebration.🎆🎇</em></h1>
+      <h1>🙏🏻🙏🏻</h1>
+      <p class="intro-copy"><em>We request the pleasure of your presence at our wedding. Your attendance would bring us
+          immense happiness😊😊</em></p>
+      <div class="envelope-wrap" id="envelopeWrap">
+        <div class="envelope-back"></div>
+        <div class="letter"><span>YOU ARE INVITED</span><b>♡ ♡</b><small>With love, always</small></div>
+        <div class="envelope-front"></div>
+        <div class="envelope-flap"></div>
+        <div class="wax-seal">✦</div>
+      </div>
+      <h2 style="font-family:'Yatra One', cursive !important;"><em>आप और आपके पूरे परिवार को हमारी
+          तरफ से सादर
+          निमंत्रित किया जाता है✨✨</em></h2>
+      <button class="gold-button intro-open" id="revealInvitation">Open Your Invitation <span>↗</span></button>
+      <p class="intro-hint">Tap to reveal the celebration</p>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <a class="brand" href="#home">✦ <span>A Royal CELEBRATION</span> ✦</a>
+    <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+    <nav class="nav">
+      <a href="#story">Our Story</a><a href="#events">Events</a><a href="#gallery">Gallery</a><a href="#venue">Venue</a>
+      <button class="nav-cta" id="shareTop">Share Invitation ↗</button>
+    </nav>
+  </div>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-overlay"></div>
+      <div class="gold-particles" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="hero-content reveal">
+        <h2><em>|| ॐ श्री गणेशाय नमः ||</em></h2>
+        <div class="ornament">❧ ✦ ❧</div>
+        <p class="eyebrow">TOGETHER WITH THEIR FAMILY</p>
+        <h1>A Royal Union<br><em>One Beautiful</em> Beginning.</h1>
+        <p class="hero-sub">Joyfully invite you to celebrate the beautiful wedding ceremony</p>
+        <div class="double-couple">
+          <div class="couple-names"><span class="couple-label">
+              <div class="gold-heart">♡♡♡</div>
+            </span><span class="names-pair">Bride One
+              <i>&amp;</i> Groom One</span></div>
+          <div class="double-divider">✦ ❧ ✦</div>
+          <div class="couple-names"><span class="couple-label">
+              <div class="gold-heart">♡♡♡</div>
+            </span><span class="names-pair">Bride Two
+              <i>&amp;</i> Groom Two</span></div>
+        </div>
+        <p class="date-line">FRIDAY, 04 DECEMBER 2026<i>•</i> Wedding Ceremony</p>
+        <button class="gold-button" id="openInvite">Explore the Invitation <span>↓</span></button>
+      </div>
+      <button class="music-button" id="musicToggle" aria-pressed="false"><span class="music-icon">♫</span><span
+          id="musicLabel">Play ambience</span></button>
+      <div class="hero-bottom">A CELEBRATION OF LOVE <span>✦</span> FAMILY <span>✦</span> FOREVER</div>
+    </section>
+
+    <section class="countdown section-light" id="countdown">
+      <h2>An Unforgettable Celebration</h2>
+      <p class="section-note" id="countdownMessage" aria-live="polite">Wedding takes place Friday, December 4,2026.</p>
+      <p class="eyebrow">THE CELEBRATION BEGINS IN</p>
+      <div class="count-grid" aria-label="Time until the wedding celebration">
+        <div class="count-box"><strong id="countdownDays">00</strong><span>Days</span></div>
+        <div class="count-box"><strong id="countdownHours">00</strong><span>Hours</span></div>
+        <div class="count-box"><strong id="countdownMinutes">00</strong><span>Minutes</span></div>
+        <div class="count-box"><strong id="countdownSeconds">00</strong><span>Seconds</span></div>
+      </div>
+      <div class="flourish">— ❦ —</div>
+    </section>
+
+    <section class="story section-dark" id="story">
+      <div class="section-heading">
+        <p class="eyebrow">CELEBRATING TWO COUPLES</p>
+        <h2>Two Weddings, One Celebration</h2>
+        <p>Join us as two couples begin their forever on the same special day.</p>
+      </div>
+      <div class="wedding-couples">
+        <article class="wedding-couple">
+          <div class="gold-heart">♡♡♡</div>
+          <div class="couple-portraits">
+            <div class="portrait-frame">
+              <img src="images/bride-one-placeholder.svg" alt="Bride One portrait placeholder">
+              <span class="frame-label">BRIDE ONE</span>
+            </div>
+            <span class="couple-heart" aria-hidden="true">&amp;</span>
+            <div class="portrait-frame">
+              <img src="images/groom-one-placeholder.svg" alt="Groom One portrait placeholder">
+              <span class="frame-label">GROOM ONE</span>
+            </div>
+          </div>
+          <p>One beautiful beginning, surrounded by the people you love.</p>
+        </article>
+        <article class="wedding-couple">
+          <div class="gold-heart">♡♡♡</div>
+          <div class="couple-portraits">
+            <div class="portrait-frame">
+              <img src="images/bride-two-placeholder.svg" alt="Bride Two portrait placeholder">
+              <span class="frame-label">BRIDE TWO</span>
+            </div>
+            <span class="couple-heart" aria-hidden="true">&amp;</span>
+            <div class="portrait-frame">
+              <img src="images/groom-two-placeholder.svg" alt="Groom Two portrait placeholder">
+              <span class="frame-label">GROOM TWO</span>
+            </div>
+          </div>
+          <p>Another forever begins, with double the joy.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="events section-light" id="events">
+      <div class="section-heading">
+        <p class="eyebrow">SAVE THE MOMENTS</p>
+        <h2>A Day of Joyful Moments</h2>
+        <p>Celebrate both couples with traditions, smiles and memories on December 4, 2026.</p>
+      </div>
+      <div class="event-grid">
+        <article class="event-card">
+          <div class="event-icon">☼</div>
+          <h3>Haldi</h3>
+          <p>A little sunshine, laughter and golden traditions.</p>
+          <div class="event-meta">◷ <span>Date &amp; Time</span></div>
+          <div class="event-meta">⌖ <span>Venue details</span></div>
+        </article>
+        <article class="event-card">
+          <div class="event-icon">❋</div>
+          <h3>Mehndi</h3>
+          <p>Intricate patterns and joyful celebrations.</p>
+          <div class="event-meta">◷ <span>Date &amp; Time</span></div>
+          <div class="event-meta">⌖ <span>Venue details</span></div>
+        </article>
+        <article class="event-card featured">
+          <div class="event-icon">♕</div>
+          <h3>Wedding</h3>
+          <p>The first beautiful beginning, surrounded by loved ones.</p>
+          <div class="event-meta">◷ <span>Friday, December 4, 2026</span></div>
+          <div class="event-meta">⌖ <span>Venue details</span></div>
+        </article>
+      </div>
+      <hr class="event-card-divider" />
+      <button class="event-open-card" type="button" data-card-event="Wedding">Open Card</button>
+    </section>
+
+    <section class="venue-gallery" id="venue">
+      <div class="venue-panel">
+        <p class="eyebrow">WE CAN’T WAIT TO SEE YOU</p>
+        <h2>Find the Celebration</h2>
+        <p class="venue-name">Wedding Celebration Venue</p>
+        <p class="venue-address">Open the venue location in Google Maps.</p>
+        <a class="outline-button" id="mapButton" href="https://maps.app.goo.gl/TzMqDaipc2BdKY6U6" target="_blank"
+          rel="noopener noreferrer">⌖ View on Map</a>
+        <a class="map-placeholder" href="https://maps.app.goo.gl/TzMqDaipc2BdKY6U6" target="_blank"
+          rel="noopener noreferrer" aria-label="Open wedding venue location in Google Maps">
+          <span class="map-pin">⌖</span><span>OPEN VENUE LOCATION</span><small>View in Google Maps ↗</small>
+        </a>
+      </div>
+      <div class="gallery-panel" id="gallery">
+        <p class="eyebrow">THE MOMENTS WE TREASURE</p>
+        <h2>Our Gallery</h2>
+        <div class="gallery-main"><img src="images/gallery-main-placeholder.svg"
+            alt="Main gallery photo placeholder"><button class="gallery-arrow prev"
+            aria-label="Previous photo">‹</button><button class="gallery-arrow next" aria-label="Next photo">›</button>
+        </div>
+        <div class="gallery-thumbs">
+          <button class="thumb active" data-image="images/gallery-main-placeholder.svg"><img
+              src="images/gallery-main-placeholder.svg" alt="Gallery thumbnail 1"></button>
+          <button class="thumb" data-image="images/gallery-2-placeholder.svg"><img
+              src="images/gallery-2-placeholder.svg" alt="Gallery thumbnail 2"></button>
+          <button class="thumb" data-image="images/gallery-3-placeholder.svg"><img
+              src="images/gallery-3-placeholder.svg" alt="Gallery thumbnail 3"></button>
+          <button class="thumb" data-image="images/gallery-3-placeholder.svg"><img
+              src="images/gallery-3-placeholder.svg" alt="Gallery thumbnail 3"></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="rsvp section-light">
+      <div class="rsvp-copy">
+        <p class="eyebrow">YOUR PRESENCE IS OUR PRESENT</p>
+        <h2>Please Join Us</h2>
+        <p>We’d be honoured to celebrate this beautiful day with you.</p>
+      </div>
+      <div class="share-card">
+        <div class="share-symbol">↗</div>
+        <p class="eyebrow">SPREAD THE JOY</p>
+        <h3>Share the Invitation</h3>
+        <p>Send this little piece of happiness to family and friends.</p><button class="outline-button dark-outline"
+          id="shareButton">Copy Invitation Link</button>
+        <p class="share-feedback" id="shareFeedback" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-ornament">✦ ❧ ✦</div>
+    <p>WITH LOVE &amp; BEST WISHES</p>
+    <h2>Two New Beginnings</h2><small>Made with love for a day to remember</small>
+  </footer>
+  <div class="event-card-overlay" id="eventCardOverlay" role="dialog" aria-modal="true"
+    aria-label="Event invitation card" tabindex="-1" hidden>
+    <button class="event-card-close" type="button" aria-label="Close invitation card">×</button>
+    <div class="event-card-viewer">
+      <button class="event-card-arrow prev" type="button" aria-label="Previous card image">‹</button>
+      <img id="eventCardImage" src="images/card.svg" alt="Event invitation card preview" />
+      <button class="event-card-arrow next" type="button" aria-label="Next card image">›</button>
+    </div>
+    <p class="event-card-count" id="eventCardCount" aria-live="polite">1 / 2</p>
+  </div>
+  <audio id="ambienceAudio" src="weddingaudio1.mp3" loop preload="none"></audio>
+  <script src="script.js"></script>
+</body>
+
+</html>
