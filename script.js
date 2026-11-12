@@ -317,18 +317,50 @@ document.querySelector('.gallery-arrow.next').addEventListener('click', () => se
 const eventCardOverlay = document.getElementById('eventCardOverlay');
 const eventCardImage = document.getElementById('eventCardImage');
 const eventCardCount = document.getElementById('eventCardCount');
-const eventCardImages = ['images/card.svg', 'images/card-two.svg'];
+const eventCardZoom = document.getElementById('eventCardZoom');
+const eventCardViewport = document.getElementById('eventCardViewport');
+const eventCardImages = ['images/card.jpg', 'images/card-two.jpg'];
 let activeEventCardImage = 0;
-let swipeStartX = null;
+let eventCardScale = 1;
+let eventCardOffsetX = 0;
+let eventCardOffsetY = 0;
+let eventCardGesture = null;
+let eventCardPinched = false;
+const eventCardPointers = new Map();
+
+function clampEventCardOffset() {
+  const viewportRect = eventCardViewport.getBoundingClientRect();
+  const maxX = Math.max(0, (eventCardImage.offsetWidth * eventCardScale - viewportRect.width) / 2);
+  const maxY = Math.max(0, (eventCardImage.offsetHeight * eventCardScale - viewportRect.height) / 2);
+  eventCardOffsetX = Math.max(-maxX, Math.min(maxX, eventCardOffsetX));
+  eventCardOffsetY = Math.max(-maxY, Math.min(maxY, eventCardOffsetY));
+}
+
+function updateEventCardZoom() {
+  clampEventCardOffset();
+  eventCardImage.style.transform =
+    `translate3d(${eventCardOffsetX}px, ${eventCardOffsetY}px, 0) scale(${eventCardScale})`;
+  eventCardZoom.textContent = eventCardScale > 1 ? 'Zoom Out' : 'Zoom In';
+  eventCardZoom.setAttribute('aria-pressed', String(eventCardScale > 1));
+}
+
+function setEventCardZoom(scale) {
+  eventCardScale = scale;
+  eventCardOffsetX = 0;
+  eventCardOffsetY = 0;
+  updateEventCardZoom();
+}
 
 function closeEventCard() {
   eventCardOverlay.hidden = true;
+  setEventCardZoom(1);
 }
 
 function showEventCardImage(index) {
   activeEventCardImage = (index + eventCardImages.length) % eventCardImages.length;
   eventCardImage.src = eventCardImages[activeEventCardImage];
   eventCardCount.textContent = `${activeEventCardImage + 1} / ${eventCardImages.length}`;
+  setEventCardZoom(1);
 }
 
 document.querySelectorAll('.event-open-card').forEach(button => {
@@ -348,21 +380,92 @@ eventCardOverlay.querySelector('.event-card-arrow.next').addEventListener('click
   showEventCardImage(activeEventCardImage + 1);
 });
 eventCardOverlay.querySelector('.event-card-close').addEventListener('click', closeEventCard);
+eventCardZoom.addEventListener('click', () => {
+  setEventCardZoom(eventCardScale > 1 ? 1 : 2);
+});
 eventCardOverlay.addEventListener('click', event => {
   if (event.target === eventCardOverlay) closeEventCard();
 });
-eventCardImage.addEventListener('pointerdown', event => {
-  if (event.pointerType === 'touch') swipeStartX = event.clientX;
+function getEventCardPinch() {
+  const [first, second] = [...eventCardPointers.values()];
+  const dx = second.x - first.x;
+  const dy = second.y - first.y;
+  return {
+    distance: Math.hypot(dx, dy),
+    centerX: (first.x + second.x) / 2,
+    centerY: (first.y + second.y) / 2
+  };
+}
+
+eventCardViewport.addEventListener('pointerdown', event => {
+  eventCardPointers.set(event.pointerId, {x: event.clientX, y: event.clientY});
+  if (eventCardPointers.size === 1) {
+    eventCardPinched = false;
+    eventCardGesture = {
+      mode: eventCardScale > 1 ? 'pan' : 'swipe',
+      startX: event.clientX,
+      startY: event.clientY,
+      offsetX: eventCardOffsetX,
+      offsetY: eventCardOffsetY
+    };
+  } else if (eventCardPointers.size === 2) {
+    const pinch = getEventCardPinch();
+    const rect = eventCardViewport.getBoundingClientRect();
+    eventCardPinched = true;
+    eventCardGesture = {
+      mode: 'pinch',
+      scale: eventCardScale,
+      distance: pinch.distance,
+      contentX: (pinch.centerX - rect.left - rect.width / 2 - eventCardOffsetX) / eventCardScale,
+      contentY: (pinch.centerY - rect.top - rect.height / 2 - eventCardOffsetY) / eventCardScale
+    };
+  }
 });
-eventCardImage.addEventListener('pointerup', event => {
-  if (swipeStartX === null) return;
-  const swipeDistance = event.clientX - swipeStartX;
-  swipeStartX = null;
-  if (Math.abs(swipeDistance) < 40) return;
-  showEventCardImage(activeEventCardImage + (swipeDistance < 0 ? 1 : -1));
+eventCardViewport.addEventListener('pointermove', event => {
+  if (!eventCardPointers.has(event.pointerId)) return;
+  eventCardPointers.set(event.pointerId, {x: event.clientX, y: event.clientY});
+  if (eventCardGesture?.mode === 'pinch' && eventCardPointers.size === 2) {
+    const pinch = getEventCardPinch();
+    const rect = eventCardViewport.getBoundingClientRect();
+    eventCardScale = Math.max(1, Math.min(4,
+      eventCardGesture.scale * pinch.distance / eventCardGesture.distance));
+    eventCardOffsetX = pinch.centerX - rect.left - rect.width / 2 - eventCardGesture.contentX * eventCardScale;
+    eventCardOffsetY = pinch.centerY - rect.top - rect.height / 2 - eventCardGesture.contentY * eventCardScale;
+    updateEventCardZoom();
+  } else if (eventCardGesture?.mode === 'pan' && eventCardPointers.size === 1) {
+    eventCardOffsetX = eventCardGesture.offsetX + event.clientX - eventCardGesture.startX;
+    eventCardOffsetY = eventCardGesture.offsetY + event.clientY - eventCardGesture.startY;
+    updateEventCardZoom();
+  }
 });
-eventCardImage.addEventListener('pointercancel', () => {
-  swipeStartX = null;
+eventCardViewport.addEventListener('pointerup', event => {
+  const pointer = eventCardPointers.get(event.pointerId);
+  if (!pointer) return;
+  eventCardPointers.delete(event.pointerId);
+  if (eventCardPointers.size === 1 && eventCardPinched) {
+    const remaining = [...eventCardPointers.values()][0];
+    eventCardGesture = {
+      mode: 'pan',
+      startX: remaining.x,
+      startY: remaining.y,
+      offsetX: eventCardOffsetX,
+      offsetY: eventCardOffsetY
+    };
+  } else if (eventCardPointers.size === 0) {
+    if (!eventCardPinched && eventCardGesture?.mode === 'swipe') {
+      const swipeDistance = event.clientX - eventCardGesture.startX;
+      if (Math.abs(swipeDistance) >= 40) {
+        showEventCardImage(activeEventCardImage + (swipeDistance < 0 ? 1 : -1));
+      }
+    }
+    eventCardGesture = null;
+    eventCardPinched = false;
+  }
+});
+eventCardViewport.addEventListener('pointercancel', () => {
+  eventCardPointers.clear();
+  eventCardGesture = null;
+  eventCardPinched = false;
 });
 document.addEventListener('keydown', event => {
   if (eventCardOverlay.hidden) return;
