@@ -31,6 +31,7 @@
 .skyshot-canvas[hidden]{display:none}
 @media(prefers-reduced-motion:reduce){.skyshot-canvas{display:none!important}}
 .event-card-divider{width:min(100%,760px);height:1px;border:0;margin:34px auto 22px;background:linear-gradient(90deg,transparent,#b7823e 20%,#d7ad66 50%,#b7823e 80%,transparent)}
+.event-card,.event-card.featured{background:#f0dfc3}
 .events .section-heading h2,.event-card h3{font-family:'Yatra One',cursive}
 .events .section-heading h2{font-size:clamp(27px,4vw,38px)}
 .event-card h3{font-size:21px;line-height:1.5;min-height:3em;display:grid;place-items:center}
