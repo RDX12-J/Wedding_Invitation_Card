@@ -214,7 +214,7 @@ nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
   nav.classList.remove('open'); menuToggle.setAttribute('aria-expanded', 'false');
 }));
 document.getElementById('openInvite').addEventListener('click', () => {
-  document.getElementById('countdown').scrollIntoView({behavior:'smooth'});
+  document.getElementById('countdown').scrollIntoView({ behavior: 'smooth' });
 });
 
 const countdownElements = {
@@ -398,7 +398,7 @@ function getEventCardPinch() {
 }
 
 eventCardViewport.addEventListener('pointerdown', event => {
-  eventCardPointers.set(event.pointerId, {x: event.clientX, y: event.clientY});
+  eventCardPointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
   if (eventCardPointers.size === 1) {
     eventCardPinched = false;
     eventCardGesture = {
@@ -423,7 +423,7 @@ eventCardViewport.addEventListener('pointerdown', event => {
 });
 eventCardViewport.addEventListener('pointermove', event => {
   if (!eventCardPointers.has(event.pointerId)) return;
-  eventCardPointers.set(event.pointerId, {x: event.clientX, y: event.clientY});
+  eventCardPointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
   if (eventCardGesture?.mode === 'pinch' && eventCardPointers.size === 2) {
     const pinch = getEventCardPinch();
     const rect = eventCardViewport.getBoundingClientRect();
@@ -479,7 +479,7 @@ async function shareInvitation() {
   const url = window.location.href;
   try {
     if (navigator.share) {
-      await navigator.share({title: 'Double Wedding Invitation', text: 'You are invited to celebrate two beautiful weddings with us!', url});
+      await navigator.share({ title: 'Double Wedding Invitation', text: 'You are invited to celebrate two beautiful weddings with us!', url });
       feedback.textContent = 'Sharing opened.';
     } else if (navigator.clipboard && window.isSecureContext) {
       await navigator.clipboard.writeText(url);
@@ -494,23 +494,53 @@ async function shareInvitation() {
 }
 document.getElementById('shareButton').addEventListener('click', shareInvitation);
 document.getElementById('shareTop').addEventListener('click', shareInvitation);
-document.getElementById('rsvpForm').addEventListener('submit', event => {
+const RSVP_API_URL = "https://wedding-rsvp-api.rishabhdhankhar.workers.dev/";
+
+document.getElementById('rsvpForm').addEventListener('submit', async event => {
   event.preventDefault();
+
   const form = event.currentTarget;
+  const feedback = document.getElementById('rsvpFeedback');
+  const button = form.querySelector('button[type="submit"]');
+
   const name = form.elements.name.value.trim();
   const guests = form.elements.guests.value;
   const attendance = form.elements.attendance.value;
-  const message = [
-    'Wedding RSVP',
-    `Name: ${name}`,
-    `Number of guests: ${guests}`,
-    `Attendance: ${attendance}`
-  ].join('\n');
-  const whatsappUrl = `https://wa.me/919460581531?text=${encodeURIComponent(message)}`;
-  const whatsappWindow = window.open(whatsappUrl, '_blank');
-  if (!whatsappWindow) {
-    document.getElementById('rsvpFeedback').textContent = 'Please allow pop-ups to send your RSVP via WhatsApp.';
-  } else {
-    whatsappWindow.opener = null;
+
+  const originalText = button.textContent;
+
+  button.disabled = true;
+  button.textContent = 'Submitting...';
+  feedback.textContent = '';
+
+  try {
+    const response = await fetch(RSVP_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name,
+        guests,
+        attendance
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || 'Submission failed');
+    }
+
+    feedback.textContent = 'Thank you! Your RSVP has been saved successfully.';
+    form.reset();
+
+  } catch (error) {
+    console.error('RSVP Error:', error);
+    feedback.textContent = 'Unable to submit RSVP. Please try again.';
+
+  } finally {
+    button.disabled = false;
+    button.textContent = originalText;
   }
 });
