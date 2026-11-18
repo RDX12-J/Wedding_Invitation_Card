@@ -494,7 +494,23 @@ async function shareInvitation() {
 }
 document.getElementById('shareButton').addEventListener('click', shareInvitation);
 document.getElementById('shareTop').addEventListener('click', shareInvitation);
-document.getElementById('rsvpButton').addEventListener('click', () => {
-  document.getElementById('shareFeedback').textContent = 'RSVP form can be connected when event details are ready.';
-  document.getElementById('shareButton').scrollIntoView({behavior:'smooth', block:'center'});
+document.getElementById('rsvpForm').addEventListener('submit', event => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const name = form.elements.name.value.trim();
+  const guests = form.elements.guests.value;
+  const attendance = form.elements.attendance.value;
+  const message = [
+    'Wedding RSVP',
+    `Name: ${name}`,
+    `Number of guests: ${guests}`,
+    `Attendance: ${attendance}`
+  ].join('\n');
+  const whatsappUrl = `https://wa.me/919460581531?text=${encodeURIComponent(message)}`;
+  const whatsappWindow = window.open(whatsappUrl, '_blank');
+  if (!whatsappWindow) {
+    document.getElementById('rsvpFeedback').textContent = 'Please allow pop-ups to send your RSVP via WhatsApp.';
+  } else {
+    whatsappWindow.opener = null;
+  }
 });

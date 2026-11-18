@@ -18,6 +18,20 @@
 .wedding-couples{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,4vw,55px);max-width:1050px;margin:auto}
 .wedding-couple{text-align:center;padding:28px 22px;border:1px solid #d7ad6666;background:#ffffff08}
 .wedding-couple h3{font:500 30px 'Cormorant Garamond',serif;color:var(--gold2);margin:0 0 22px}
+.rsvp{grid-template-columns:1fr;gap:12px;background-image:radial-gradient(#d6b78425 1px,transparent 1px);background-size:12px 12px}
+.rsvp-copy{max-width:560px;margin:0 auto}
+.rsvp-copy .eyebrow{color:#a88b68}
+.rsvp-copy h2{font:400 clamp(44px,6vw,62px) 'Great Vibes',cursive;color:#705642;margin:8px 0 16px}
+.rsvp-copy>p:not(.eyebrow){font:18px/1.7 'Cormorant Garamond',serif;color:#886d5d}
+.rsvp-form{display:grid;gap:10px;width:min(100%,520px);margin:0 auto}
+.rsvp-form label{margin-top:7px;color:#a38b72;font:500 11px 'Cormorant Garamond',serif;letter-spacing:.13em;text-transform:uppercase}
+.rsvp-form input,.rsvp-form select{width:100%;min-height:50px;padding:12px 14px;border:1px solid #d2b895;border-radius:0;background:#fffaf1;color:#624c3a;font:16px 'Cormorant Garamond',serif}
+.rsvp-form input:focus,.rsvp-form select:focus{outline:2px solid #8c9975;outline-offset:1px}
+.rsvp-submit{min-height:48px;margin-top:8px;border:0;border-radius:2px;background:#6c7959;color:#fff9ed;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.rsvp-submit:hover{background:#596749}
+.rsvp-phone,.rsvp-feedback{margin:0;text-align:center;color:#a38b72;font:12px 'Cormorant Garamond',serif}
+.rsvp-feedback{min-height:14px;color:#8b5b2d}
+.rsvp .share-card{width:min(100%,560px);margin:12px auto 0;border-left:0;border-top:1px solid #c9a878}
 .couple-portraits{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:clamp(8px,1.5vw,18px);align-items:center}
 .couple-portraits .portrait-frame{width:100%;max-width:220px;justify-self:center}
 .couple-heart{font:italic 22px 'Cormorant Garamond',serif;color:var(--gold2)}
