@@ -25,8 +25,9 @@
 .rsvp-copy>p:not(.eyebrow){font:18px/1.7 'Cormorant Garamond',serif;color:#886d5d}
 .rsvp-form{display:grid;gap:10px;width:min(100%,520px);margin:0 auto}
 .rsvp-form label{margin-top:7px;color:#a38b72;font:500 11px 'Cormorant Garamond',serif;letter-spacing:.13em;text-transform:uppercase}
-.rsvp-form input,.rsvp-form select{width:100%;min-height:50px;padding:12px 14px;border:1px solid #d2b895;border-radius:0;background:#fffaf1;color:#624c3a;font:16px 'Cormorant Garamond',serif}
-.rsvp-form input:focus,.rsvp-form select:focus{outline:2px solid #8c9975;outline-offset:1px}
+.rsvp-form input,.rsvp-form select,.rsvp-form textarea{width:100%;min-height:50px;padding:12px 14px;border:1px solid #d2b895;border-radius:0;background:#fffaf1;color:#624c3a;font:16px 'Cormorant Garamond',serif}
+.rsvp-form textarea{resize:vertical}
+.rsvp-form input:focus,.rsvp-form select:focus,.rsvp-form textarea:focus{outline:2px solid #8c9975;outline-offset:1px}
 .rsvp-submit{min-height:48px;margin-top:8px;border:0;border-radius:2px;background:#6c7959;color:#fff9ed;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
 .rsvp-submit:hover{background:#596749}
 .rsvp-phone,.rsvp-feedback{margin:0;text-align:center;color:#a38b72;font:12px 'Cormorant Garamond',serif}

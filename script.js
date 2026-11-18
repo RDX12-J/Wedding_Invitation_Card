@@ -506,6 +506,7 @@ document.getElementById('rsvpForm').addEventListener('submit', async event => {
   const name = form.elements.name.value.trim();
   const guests = form.elements.guests.value;
   const attendance = form.elements.attendance.value;
+  const wishes = form.elements.wishes.value.trim();
 
   const originalText = button.textContent;
 
@@ -522,7 +523,8 @@ document.getElementById('rsvpForm').addEventListener('submit', async event => {
       body: JSON.stringify({
         name,
         guests,
-        attendance
+        attendance,
+        ...(wishes ? {wishes} : {})
       })
     });
 
