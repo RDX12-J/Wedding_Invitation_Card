@@ -524,7 +524,7 @@ document.getElementById('rsvpForm').addEventListener('submit', async event => {
         name,
         guests,
         attendance,
-        ...(wishes ? {wishes} : {})
+        ...(wishes ? { wishes } : {})
       })
     });
 
@@ -546,3 +546,57 @@ document.getElementById('rsvpForm').addEventListener('submit', async event => {
     button.textContent = originalText;
   }
 });
+
+/* Royal Wedding Visitor Counter */
+
+(async function initWeddingVisitorCounter() {
+  const API_URL =
+    "https://wedding-visitor-counter.rishabhdhankhar.workers.dev";
+
+  const totalElement = document.getElementById("totalVisits");
+  const uniqueElement = document.getElementById("uniqueVisitors");
+
+  if (!totalElement || !uniqueElement) return;
+
+  try {
+    let visitorId = localStorage.getItem("weddingVisitorId");
+
+    if (!visitorId) {
+      visitorId = crypto.randomUUID();
+      localStorage.setItem("weddingVisitorId", visitorId);
+    }
+
+    // Record this page opening
+    const visitResponse = await fetch(`${API_URL}/visit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ visitorId })
+    });
+
+    if (!visitResponse.ok) {
+      throw new Error("Unable to record visit");
+    }
+
+    // Fetch updated statistics
+    const statsResponse = await fetch(`${API_URL}/stats`);
+
+    if (!statsResponse.ok) {
+      throw new Error("Unable to fetch statistics");
+    }
+
+    const stats = await statsResponse.json();
+
+    totalElement.textContent =
+      Number(stats.totalVisits).toLocaleString("en-IN");
+
+    uniqueElement.textContent =
+      Number(stats.uniqueVisitors).toLocaleString("en-IN");
+
+  } catch (error) {
+    console.error("Wedding visitor counter:", error);
+    totalElement.textContent = "—";
+    uniqueElement.textContent = "—";
+  }
+})();
