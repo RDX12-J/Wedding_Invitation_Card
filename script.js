@@ -10,8 +10,275 @@ const skyshotCanvas = document.getElementById('skyshotCanvas');
 const skyshotContext = skyshotCanvas.getContext('2d');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const welcomeImageOverlay = document.getElementById('welcomeImageOverlay');
+const eventGrid = document.querySelector('.event-grid');
+const eventCards = eventGrid ? [...eventGrid.querySelectorAll('.event-card')] : [];
+const eventStackMedia = window.matchMedia('(max-width: 560px)');
 let ambienceRequested = false;
 let welcomeImageTimer;
+let activeEventIndex = 0;
+
+if (eventGrid) {
+  const updateEventStack = nextIndex => {
+    activeEventIndex = Math.max(0, Math.min(nextIndex, eventCards.length - 1));
+    eventCards.forEach((card, index) => {
+      card.classList.toggle('is-active', index === activeEventIndex);
+      card.classList.toggle('is-previous', index === activeEventIndex - 1);
+      card.classList.toggle('is-next', index === activeEventIndex + 1);
+      card.classList.toggle('is-back', Math.abs(index - activeEventIndex) > 1);
+      if (index === activeEventIndex) {
+        card.setAttribute('aria-current', 'true');
+      } else {
+        card.removeAttribute('aria-current');
+      }
+    });
+  };
+
+  updateEventStack(activeEventIndex);
+
+  let dragStartX = 0;
+  let dragStartScrollLeft = 0;
+  let activeDragPointer = null;
+  let dragStarted = false;
+  let mobileGesture = null;
+
+  eventGrid.addEventListener('pointerdown', event => {
+    if (eventStackMedia.matches) {
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      mobileGesture = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        deltaX: 0,
+        deltaY: 0
+      };
+      eventGrid.setPointerCapture(event.pointerId);
+      return;
+    }
+    if (event.pointerType !== 'mouse' || event.button !== 0) return;
+    dragStartX = event.clientX;
+    dragStartScrollLeft = eventGrid.scrollLeft;
+    activeDragPointer = event.pointerId;
+    dragStarted = false;
+    eventGrid.setPointerCapture(event.pointerId);
+  });
+
+  eventGrid.addEventListener('pointermove', event => {
+    if (mobileGesture?.pointerId === event.pointerId) {
+      mobileGesture.deltaX = event.clientX - mobileGesture.startX;
+      mobileGesture.deltaY = event.clientY - mobileGesture.startY;
+      if (Math.abs(mobileGesture.deltaX) > 10 &&
+        Math.abs(mobileGesture.deltaX) > Math.abs(mobileGesture.deltaY)) {
+        eventGrid.classList.add('is-swiping');
+        const progress = Math.min(Math.abs(mobileGesture.deltaX) / 150, 1);
+        eventGrid.style.setProperty('--event-drag-x', `${mobileGesture.deltaX}px`);
+        eventGrid.style.setProperty('--event-drag-y', `${Math.min(Math.abs(mobileGesture.deltaX) * 0.035, 18)}px`);
+        eventGrid.style.setProperty('--event-drag-rotate', `${Math.max(-6, Math.min(6, mobileGesture.deltaX * 0.025))}deg`);
+        if (mobileGesture.deltaX < 0) {
+          eventGrid.style.setProperty('--event-next-shift', `${48 * (1 - progress)}%`);
+          eventGrid.style.setProperty('--event-next-scale', `${0.88 + progress * 0.12}`);
+          eventGrid.style.setProperty('--event-next-y', `${18 * (1 - progress)}px`);
+        } else {
+          eventGrid.style.setProperty('--event-previous-shift', `${48 * (1 - progress)}%`);
+          eventGrid.style.setProperty('--event-previous-scale', `${0.88 + progress * 0.12}`);
+          eventGrid.style.setProperty('--event-previous-y', `${18 * (1 - progress)}px`);
+        }
+        if (event.cancelable) event.preventDefault();
+      }
+      return;
+    }
+    if (event.pointerId !== activeDragPointer) return;
+    const distance = event.clientX - dragStartX;
+    if (!dragStarted && Math.abs(distance) > 6) {
+      dragStarted = true;
+      eventGrid.classList.add('is-dragging');
+    }
+    if (dragStarted) {
+      eventGrid.scrollTo({ left: dragStartScrollLeft - distance, behavior: 'instant' });
+      event.preventDefault();
+    }
+  });
+
+  const clearMobileGesture = () => {
+    mobileGesture = null;
+    eventGrid.classList.remove('is-swiping');
+    [
+      '--event-drag-x',
+      '--event-drag-y',
+      '--event-drag-rotate',
+      '--event-next-shift',
+      '--event-next-scale',
+      '--event-next-y',
+      '--event-previous-shift',
+      '--event-previous-scale',
+      '--event-previous-y'
+    ].forEach(property => eventGrid.style.removeProperty(property));
+  };
+
+  const finishMobileGesture = (event, shouldAdvance) => {
+    if (mobileGesture?.pointerId !== event.pointerId) return;
+    const { deltaX, deltaY } = mobileGesture;
+    clearMobileGesture();
+    if (shouldAdvance && Math.abs(deltaX) > 56 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      updateEventStack(activeEventIndex + (deltaX < 0 ? 1 : -1));
+    }
+  };
+
+  eventGrid.addEventListener('pointerup', event => finishMobileGesture(event, true));
+  eventGrid.addEventListener('pointercancel', event => finishMobileGesture(event, false));
+  eventGrid.addEventListener('lostpointercapture', event => finishMobileGesture(event, false));
+
+  eventGrid.addEventListener('keydown', event => {
+    if (!eventStackMedia.matches || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+    event.preventDefault();
+    updateEventStack(activeEventIndex + (event.key === 'ArrowRight' ? 1 : -1));
+  });
+
+  const finishEventGridDrag = event => {
+    if (event.pointerId !== activeDragPointer) return;
+    activeDragPointer = null;
+    if (dragStarted) {
+      eventGrid.classList.remove('is-dragging');
+      eventGrid.scrollTo({ left: eventGrid.scrollLeft, behavior: 'smooth' });
+    }
+    dragStarted = false;
+  };
+
+  eventGrid.addEventListener('pointerup', finishEventGridDrag);
+  eventGrid.addEventListener('pointercancel', finishEventGridDrag);
+  eventGrid.addEventListener('lostpointercapture', finishEventGridDrag);
+}
+
+document.querySelectorAll('.portrait-scratch').forEach(button => {
+  const frame = button.closest('.portrait-frame');
+  const canvas = button.querySelector('canvas');
+  const context = canvas.getContext('2d', { willReadFrequently: true });
+  let scratched = false;
+  let revealed = false;
+  let activePointer = null;
+  let previousPoint = null;
+
+  const drawScratchCover = () => {
+    if (scratched || revealed) return;
+    const bounds = button.getBoundingClientRect();
+    if (!bounds.width || !bounds.height) return;
+
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(bounds.width * pixelRatio);
+    canvas.height = Math.round(bounds.height * pixelRatio);
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+    const gradient = context.createLinearGradient(0, 0, bounds.width, bounds.height);
+    gradient.addColorStop(0, '#f0d393');
+    gradient.addColorStop(.48, '#bd8746');
+    gradient.addColorStop(1, '#8e552b');
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, bounds.width, bounds.height);
+
+    context.strokeStyle = '#fff0c966';
+    context.lineWidth = 1;
+    for (let y = 16; y < bounds.height; y += 26) {
+      for (let x = 16; x < bounds.width; x += 26) {
+        context.beginPath();
+        context.moveTo(x, y - 4);
+        context.lineTo(x + 4, y);
+        context.lineTo(x, y + 4);
+        context.lineTo(x - 4, y);
+        context.closePath();
+        context.stroke();
+      }
+    }
+
+    context.strokeStyle = '#fff0c9a8';
+    context.strokeRect(8, 8, bounds.width - 16, bounds.height - 16);
+  };
+
+  const getScratchPoint = event => {
+    const bounds = canvas.getBoundingClientRect();
+    return { x: event.clientX - bounds.left, y: event.clientY - bounds.top };
+  };
+
+  const eraseScratch = (point, isStart) => {
+    context.globalCompositeOperation = 'destination-out';
+    context.lineCap = 'round';
+    context.lineJoin = 'round';
+    context.lineWidth = 46;
+    context.beginPath();
+    if (isStart) {
+      context.arc(point.x, point.y, 23, 0, Math.PI * 2);
+      context.fill();
+    } else {
+      context.moveTo(previousPoint.x, previousPoint.y);
+      context.lineTo(point.x, point.y);
+      context.stroke();
+    }
+    previousPoint = point;
+  };
+
+  const getScratchCoverage = () => {
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    const sampleStep = 16;
+    let transparentPixels = 0;
+    let sampledPixels = 0;
+
+    for (let y = 0; y < canvas.height; y += sampleStep) {
+      for (let x = 0; x < canvas.width; x += sampleStep) {
+        if (pixels[(y * canvas.width + x) * 4 + 3] < 32) transparentPixels += 1;
+        sampledPixels += 1;
+      }
+    }
+    return transparentPixels / sampledPixels;
+  };
+
+  const revealPortrait = () => {
+    if (revealed) return;
+    revealed = true;
+    button.disabled = true;
+    frame.classList.remove('is-scratching');
+    frame.classList.add('is-revealing');
+    window.setTimeout(() => {
+      frame.classList.add('is-revealed');
+      button.hidden = true;
+    }, 650);
+  };
+
+  button.addEventListener('pointerdown', event => {
+    if (revealed || (event.pointerType === 'mouse' && event.button !== 0)) return;
+    activePointer = event.pointerId;
+    scratched = true;
+    frame.classList.add('is-scratching');
+    button.setPointerCapture(event.pointerId);
+    eraseScratch(getScratchPoint(event), true);
+    event.preventDefault();
+  });
+
+  button.addEventListener('pointermove', event => {
+    if (event.pointerId !== activePointer) return;
+    eraseScratch(getScratchPoint(event), false);
+    event.preventDefault();
+  });
+
+  const finishScratch = event => {
+    if (event.pointerId !== activePointer) return;
+    activePointer = null;
+    previousPoint = null;
+    frame.classList.remove('is-scratching');
+    if (!revealed && getScratchCoverage() >= .4) revealPortrait();
+  };
+
+  button.addEventListener('pointerup', finishScratch);
+  button.addEventListener('pointercancel', finishScratch);
+  button.addEventListener('lostpointercapture', finishScratch);
+  button.addEventListener('click', event => {
+    if (event.detail === 0) revealPortrait();
+  });
+
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(drawScratchCover).observe(frame);
+  } else {
+    window.addEventListener('resize', drawScratchCover);
+  }
+  drawScratchCover();
+});
 
 let skyshotWidth = 0;
 let skyshotHeight = 0;
