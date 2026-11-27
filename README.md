@@ -35,13 +35,6 @@ This project is a digital wedding invitation card created using HTML, CSS, and J
 - "weddingaudio1.mp3" — Background music
 - "README.txt" — Project documentation
 
-🚀 How to Run
-
-1. Download or clone this repository.
-2. Open the project folder in Visual Studio Code.
-3. Run "index.html" using Live Server.
-4. Enjoy the digital wedding invitation.
-
 🌐 Deployment
 
 This website can be hosted using GitHub Pages and shared with friends and family through a public link.
